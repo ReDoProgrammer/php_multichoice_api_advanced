@@ -14,10 +14,24 @@ if ($_SERVER["REQUEST_METHOD"] == "PUT") {
             $id = $data->id;
             $name = $data->name;
             $mark = $data->mark;
-           
+
+
+            $obj->select("groups","*",null,"id={$id}",null,null,null);
+            $result = $obj->getResult();
+            if(!$result){
+                echo json_encode([
+                    'code' => 404,
+                    'message' => 'Không tìm thấy nhóm câu hỏi phù hợp!'                    
+                ]);
+                return;
+            }
+
+
             $obj->update('groups', [
                 "name"=>$name,
-                "mark"=>$mark                
+                "mark"=>$mark ,
+                "updated_at"=>gmdate('Y-m-d h:i:s \G\M\T'),
+                "updated_by"=>$user['id']               
             ], "id={$id}");
 
             $group = $obj->getResult();
