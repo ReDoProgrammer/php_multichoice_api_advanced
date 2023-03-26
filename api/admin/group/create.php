@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $obj->insert('groups',[
                 'name'=>$name,
-                'mark'=>$mark
+                'mark'=>$mark,
+                'created_by'=>$user['id']
             ]);
             $group = $obj->getResult();
             if ($group) {
