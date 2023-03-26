@@ -3,29 +3,169 @@ include_once('../../common.php'); // include file thiết lập chung
 include_once('../middleware.php');
 
 
-if ($_SERVER["REQUEST_METHOD"] == "PUT") {
+if ($_SERVER["REQUEST_METHOD"] == "PUT" || $_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $allHeader = getallheaders();
         $jwt = new Middleware;
         $user = $jwt->decode($allHeader);
 
+        $target_dir = "../../../upload/questions/";
+
         if ($user) {
             $data = json_decode(file_get_contents("php://input", true));
-            $id = $data->id;
-            $title=$data->title;
-            $option_a = $data->option_a;
-            $option_b = $data->option_b;
-            $option_c = $data->option_c;
-            $option_d = $data->option_d;
-            $answer = $data->answer;
+            
+            //Validate inputs
+            if(empty($_POST['id']) && empty($data->id)){
+                echo json_encode([
+                    'code' => 400,
+                    'message' => 'Vui lòng nhập id của câu hỏi!'
+                ]);
+                return;
+            }
+
+            if(empty($_POST['title']) && empty($data->title)){
+                echo json_encode([
+                    'code' => 400,
+                    'message' => 'Vui lòng nhập tiêu đề câu hỏi!'
+                ]);
+                return;
+            }
+
+            if(empty($_POST['option_a']) && empty($data->option_a)){
+                echo json_encode([
+                    'code' => 400,
+                    'message' => 'Vui lòng nhập đáp án A!'
+                ]);
+                return;
+            }
+            if(empty($_POST['option_b']) && empty($data->option_b)){
+                echo json_encode([
+                    'code' => 400,
+                    'message' => 'Vui lòng nhập đáp án B!'
+                ]);
+                return;
+            }
+            if(empty($_POST['option_c']) && empty($data->option_c)){
+                echo json_encode([
+                    'code' => 400,
+                    'message' => 'Vui lòng nhập đáp án C!'
+                ]);
+                return;
+            }
+            if(empty($_POST['option_d']) && empty($data->option_d)){
+                echo json_encode([
+                    'code' => 400,
+                    'message' => 'Vui lòng nhập đáp án D!'
+                ]);
+                return;
+            }
+
+            if(empty($_POST['answer']) && empty($data->answer)){
+                echo json_encode([
+                    'code' => 400,
+                    'message' => 'Vui lòng chọn đáp án đúng!'
+                ]);
+                return;
+            }
+
+            if(empty($_POST['group_id']) && empty($data->group_id)){
+                echo json_encode([
+                    'code' => 400,
+                    'message' => 'Vui lòng nhập nhóm câu hỏi!'
+                ]);
+                return;
+            }
+            //End validating inputs
+
+
+           
+
+            $id = $data?$data->id:$_POST['id'];
+            $title = $data ? $data->title : $_POST['title'];
+            $option_a = $data ? $data->option_a : $_POST['option_a'];
+            $option_b = $data ? $data->option_b : $_POST['option_b'];
+            $option_c = $data ? $data->option_c : $_POST['option_c'];
+            $option_d = $data ? $data->option_d : $_POST['option_d'];
+            $answer = $data ? $data->answer : $_POST['answer'];
+            $group_id = $data ? $data->group_id : $_POST['group_id'];
+            $imageUrl = "";
+
+            $obj->select("questions","*",null,"id = {$id}",null,null,null);
+
+            $result = $obj->getResult();
+
+            if(!$result){
+                echo json_encode([
+                    'code' => 404,
+                    'message' => 'Không tìm thấy câu hỏi phù hợp!'
+                ]);
+                return;
+            }
+
+
+            
+            if(strlen($result[0]["img"])){
+                unlink('../../..'.$result[0]["img"]);
+            }  
+                   
+
+
+            if ($_FILES) {  //neu co hinh anh            
+                $image = $data ? $data->image : $_FILES['image'];
+                
+                if ($image['size'] > 0) {
+                    $target_file = $target_dir . $image['name'];
+
+                    
+
+                    if (file_exists($target_file)) {
+                        echo json_encode([
+                            'code' => 409,
+                            'message' => 'Hình ảnh này đã có trên hệ thống!'
+                        ]);
+                        return;
+                    }
+
+                    if ($image["size"] > 2000000) {
+                        echo json_encode([
+                            'code' => 409,
+                            'message' => 'Kích thước hình ảnh quá lớn!'
+                        ]);
+                        return;
+                    }
+                    $imageType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                    // Allow certain file formats
+                    if (
+                        $imageType != "jpg" && $imageType != "png" && $imageType != "jpeg"
+                        && $imageType != "gif"
+                    ) {
+                        echo json_encode([
+                            'code' => 409,
+                            'message' => 'Định dạng hình ảnh không hợp lệ! Chỉ chấp nhận các định dạng JPG|JPEG|PNG|GIF'
+                        ]);
+                        return;
+                    }
+
+                    move_uploaded_file($image['tmp_name'], $target_file);
+                    $imageUrl = "/upload/questions/".$image['name'];                   
+                }
+            }
+
             $obj->update('questions', [
                 "title"=>$title,
                 "option_a"=>$option_a,
                 "option_b"=>$option_b,
                 "option_c"=>$option_c,
                 "option_d"=>$option_d,
-                "answer"=>$answer
+                "group_id"=>$group_id,
+                "answer"=>$answer,
+                "img"=>$imageUrl,
+                "updated_at"=>gmdate('Y-m-d h:i:s \G\M\T'),
+                "updated_by"=>$user['id']
+
             ], "id={$id}");
+
+
             $question = $obj->getResult();
             if ($question) {
                 echo json_encode([

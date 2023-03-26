@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         return;
                     }
 
-                    if ($image["size"] > 200000) {
+                    if ($image["size"] > 2000000) {
                         echo json_encode([
                             'code' => 409,
                             'message' => 'Kích thước hình ảnh quá lớn!'
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ) {
                         echo json_encode([
                             'code' => 409,
-                            'message' => 'Định dạng hình ảnh không hợp lệ!'
+                            'message' => 'Định dạng hình ảnh không hợp lệ! Chỉ chấp nhận các định dạng JPG|JPEG|PNG|GIF'
                         ]);
                         return;
                     }
