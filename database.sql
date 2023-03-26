@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 26, 2023 lúc 03:57 PM
+-- Thời gian đã tạo: Th3 26, 2023 lúc 04:47 PM
 -- Phiên bản máy phục vụ: 10.4.27-MariaDB
 -- Phiên bản PHP: 8.2.0
 
@@ -88,9 +88,19 @@ CREATE TABLE `groups` (
   `mark` float NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `created_by` int(11) NOT NULL,
-  `updated_at` int(11) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   `updated_by` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `groups`
+--
+
+INSERT INTO `groups` (`id`, `name`, `mark`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 'Câu hỏi mức độ dễ', 0.25, '2023-03-26 14:35:58', 3, '2023-03-25 19:39:57', 3),
+(2, 'Câu hỏi vừa', 0.5, '2023-03-26 14:09:17', 3, NULL, 0),
+(3, 'Câu hỏi khó', 0.75, '2023-03-26 14:09:41', 3, NULL, 0),
+(4, 'Câu hỏi rất khó', 1, '2023-03-26 14:09:51', 3, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -176,7 +186,7 @@ ALTER TABLE `examinations`
 -- AUTO_INCREMENT cho bảng `groups`
 --
 ALTER TABLE `groups`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT cho bảng `questions`
