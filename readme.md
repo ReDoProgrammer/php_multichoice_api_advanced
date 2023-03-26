@@ -4,6 +4,6 @@ Website trắc nghiệm bằng php
 - Frontend bằng HTML và Bootstrap
 
 - Chức năng nâng cao: 
-    Câu hỏi có hình ảnh
-    Random thứ tự xuất hiện của đáp án
-    import câu hỏi từ file excel
+    - Câu hỏi có hình ảnh
+    - Random thứ tự xuất hiện của đáp án
+    - import câu hỏi từ file excel

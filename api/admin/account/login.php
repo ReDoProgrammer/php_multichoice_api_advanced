@@ -12,8 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { //kiểm tra có phương thức pos
     //lấy dữ liệu được truyền qua phương thức post từ frontend
     $data = json_decode(file_get_contents("php://input", true));
 
-    $username = $data->username;
-    $password = $data->password;
+    $username = $data?$data->username:$_POST['username'];
+    $password = $data?$data->password:$_POST['password'];
 
   
     
