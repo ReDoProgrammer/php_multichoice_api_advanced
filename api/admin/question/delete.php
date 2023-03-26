@@ -3,7 +3,7 @@ include_once('../../common.php'); // include file thiết lập chung
 include_once('../middleware.php');
 
 
-if ($_SERVER["REQUEST_METHOD"] == "DELETE") {
+if ($_SERVER["REQUEST_METHOD"] == "DELETE" || $_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $allHeader = getallheaders();
         $jwt = new Middleware;
@@ -11,11 +11,37 @@ if ($_SERVER["REQUEST_METHOD"] == "DELETE") {
 
         if ($user) {
             $data = json_decode(file_get_contents("php://input", true));
-            $id = $data->id;
+            if(empty($_POST['id']) && empty($data->id)){
+                echo json_encode([
+                    'code' => 400,
+                    'message' => 'Vui lòng nhập id của câu hỏi!'
+                ]);
+                return;
+            }
+
+
+            $id = $data?$data->id:$_POST['id'];
+
+            $obj->select("questions","*",null,"id = {$id}",null,null,null);
+
+            $result = $obj->getResult();
+
+            if(!$result){
+                echo json_encode([
+                    'code' => 404,
+                    'message' => 'Không tìm thấy câu hỏi phù hợp!'
+                ]);
+                return;
+            }
+
+           
            
             $obj->delete('questions',"id={$id}");
             $question = $obj->getResult();
             if ($question) {
+                if(strlen($result[0]["img"])){
+                    unlink('../../..'.$result[0]["img"]);
+                }  
                 echo json_encode([
                     'code' => 200,
                     'message' => 'Xóa câu hỏi thành công!'                    
