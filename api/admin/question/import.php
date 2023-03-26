@@ -30,9 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $option_d = $xlsx->rows()[$i][5];
                         $answer = strtoupper(trim($xlsx->rows()[$i][6]));
                         $group_id = (int) $xlsx->rows()[$i][7];
+                        $image = $xlsx->rows()[$i][8];
 
 
-                        
+                             
 
                         //validate data
                         if (
