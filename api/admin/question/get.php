@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         $order = "group_id";
 
-        $obj->select('questions', "questions.id,groups.name AS `group`,questions.title", $join, $filter, $order, $skip, $pageSize);
+        $obj->select('questions', "questions.id,groups.name AS `group`,questions.title,questions.img", $join, $filter, $order, $skip, $pageSize);
         $questions = $obj->getResult();
 
         $obj->total('questions', "*", $join, $filter);
