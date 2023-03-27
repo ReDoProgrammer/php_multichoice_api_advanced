@@ -50,14 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
               OR option_c like '%{$search}%'
               OR option_d like '%{$search}%'
               OR answer like '%{$search}%')";
-              
+
         $filter .= $group_id>0?" AND questions.group_id = {$group_id}":"";
 
         $join ="INNER JOIN Groups ON questions.group_id = groups.id";
 
         $order = "group_id";
 
-        $obj->select('questions', "groups.name,questions.id,questions.title", $join, $filter, $order, $skip, $pageSize);
+        $obj->select('questions', "groups.name AS `group`,questions.id,questions.title", $join, $filter, $order, $skip, $pageSize);
         $questions = $obj->getResult();
 
         $obj->total('questions', "*", $join, $filter);
