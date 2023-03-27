@@ -10,6 +10,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     if ($user) {
         $data = json_decode(file_get_contents("php://input", true));
+        if(!isset($data->page) &&  !isset($_GET['page'])){
+            echo json_encode([
+                'code' => 400,
+                'message' => 'Vui lòng cung cấp thông tin cho biến page (trang dữ liệu)!'
+            ]);
+            return;
+        }
+
+        if(!isset($data->pageSize) &&  !isset($_GET['pageSize'])){
+            echo json_encode([
+                'code' => 400,
+                'message' => 'Vui lòng cung cấp thông tin cho biến pageSize( số dòng dữ liệu )!'
+            ]);
+            return;
+        }
+
+        if(!isset($data->search) && !isset($_GET['search'])){
+            echo json_encode([
+                'code' => 400,
+                'message' => 'Vui lòng cung cấp thông tin cho biến search( từ khóa tìm kiếm, mặc định là "")!'
+            ]);
+            return;
+        }
         $page = $data ? $data->page : $_GET['page'];
         $pageSize = $data ? $data->pageSize : $_GET['pageSize'];
         $search = $data ? $data->search : $_GET['search'];
