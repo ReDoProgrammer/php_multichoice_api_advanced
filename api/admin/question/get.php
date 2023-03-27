@@ -33,24 +33,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             ]);
             return;
         }
+
+        $group_id  = isset($data->group_id)?$data->group_id:0;
+        
+
+
         $page = $data ? $data->page : $_GET['page'];
         $pageSize = $data ? $data->pageSize : $_GET['pageSize'];
         $search = $data ? $data->search : $_GET['search'];
 
         $skip = ($page - 1) * $pageSize;
 
-        $filter = "title like '%{$search}%'
+        $filter = "(title like '%{$search}%'
               OR option_a like '%{$search}%'
               OR option_b like '%{$search}%'
               OR option_c like '%{$search}%'
               OR option_d like '%{$search}%'
-              OR answer like '%{$search}%'
-        ";
+              OR answer like '%{$search}%')";
+              
+        $filter .= $group_id>0?" AND questions.group_id = {$group_id}":"";
 
-        $obj->select('questions', "id,title", null, $filter, null, $skip, $pageSize);
+        $join ="INNER JOIN Groups ON questions.group_id = groups.id";
+
+        $order = "group_id";
+
+        $obj->select('questions', "groups.name,questions.id,questions.title", $join, $filter, $order, $skip, $pageSize);
         $questions = $obj->getResult();
 
-        $obj->total('questions', "*", null, $filter);
+        $obj->total('questions', "*", $join, $filter);
         $totalRows = (int) ($obj->getResult()[0]['Total']);
         $pages = $totalRows % $pageSize == 0 ? $totalRows / $pageSize : floor($totalRows / $pageSize) + 1; //tính số trang
         if ($questions) {

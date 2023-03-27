@@ -69,7 +69,7 @@ class Database
         if ($this->tableExist($table)) {
             $sql = "SELECT $row FROM $table";
             if ($join != null) {
-                $sql .= " JOIN $join";
+                $sql .= " ".$join;
             }
             if ($where != null) {
                 $sql .= " WHERE $where";
@@ -99,7 +99,7 @@ class Database
         if ($this->tableExist($table)) {
             $sql = "SELECT COUNT($row) as Total FROM $table";
             if ($join != null) {
-                $sql .= " JOIN $join";
+                $sql .= " $join";
             }
             if ($where != null) {
                 $sql .= " WHERE $where";
