@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($user) {
 
             $data = json_decode(file_get_contents("php://input", true));
-            if ($_FILES) {  //file excel    
+            if (isset($_FILES) && isset($_FILES['file'])) {  //file excel    
                 $file = $_FILES['file'];
 
                 if ($xlsx = SimpleXLSX::parse($file['tmp_name'])) {
@@ -84,8 +84,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         ]);
                     }
                 } else {
-                    echo SimpleXLSX::parseError();
+                    echo json_encode([
+                        'status' => 400,
+                        'message' => 'Nhập danh sách câu hỏi thất bại. Vui lòng kiểm tra lại cấu trúc file!'
+                    ]);
                 }
+            }else {
+                echo json_encode([
+                    'status' => 400,
+                    'message' => 'Nhập danh sách câu hỏi thất bại. Vui lòng chọn file excel chứa danh sách câu hỏi!'
+                ]);
             }
         }
     } catch (Exception $e) {
