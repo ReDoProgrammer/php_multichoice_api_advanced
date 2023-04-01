@@ -93,6 +93,16 @@ class Database
         }
     }
 
+    public function basic($sql){
+        $query = $this->mysqli->query($sql);
+        if ($query) {
+            $this->result = $query->fetch_all(MYSQLI_ASSOC);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     //Hàm trả về tổng số dòng của câu select để tính số trang
     public function total($table, $row = "*", $join = null, $where = null)
     {
