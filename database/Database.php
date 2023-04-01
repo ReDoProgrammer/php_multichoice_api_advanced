@@ -43,6 +43,31 @@ class Database
     */
 
 
+    public function call_proc($procName, $params = array())
+    {
+        $paramString = implode(',', array_fill(0, count($params), '?'));
+        $sql = "CALL $procName($paramString)";
+        $stmt = $this->mysqli->prepare($sql);
+    
+        // Binds parameters
+        $types = str_repeat('s', count($params));
+        $stmt->bind_param($types, ...$params);
+    
+        $stmt->execute();
+    
+        $result = $stmt->get_result();
+    
+        $data = array();
+    
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+    
+        $stmt->close();
+    
+        return json_encode($data);
+    }
+
     // hàm thêm dữ liệu
     public function insert($table, $params = array())
     {
@@ -64,12 +89,12 @@ class Database
     }
 
     // hàm lấy dữ liệu
-    public function select($table, $row = "*", $join = null, $where = null, $order = null,$skip=null, $limit = null)
+    public function select($table, $row = "*", $join = null, $where = null, $order = null, $skip = null, $limit = null)
     {
         if ($this->tableExist($table)) {
             $sql = "SELECT $row FROM $table";
             if ($join != null) {
-                $sql .= " ".$join;
+                $sql .= " " . $join;
             }
             if ($where != null) {
                 $sql .= " WHERE $where";
@@ -77,9 +102,9 @@ class Database
             if ($order != null) {
                 $sql .= " ORDER BY $order";
             }
-            
+
             if ($limit != null) {
-                $sql .= " LIMIT ".($skip==null?0:$skip).", $limit";
+                $sql .= " LIMIT " . ($skip == null ? 0 : $skip) . ", $limit";
             }
             $query = $this->mysqli->query($sql);
             if ($query) {
@@ -93,7 +118,8 @@ class Database
         }
     }
 
-    public function basic($sql){
+    public function basic($sql)
+    {
         $query = $this->mysqli->query($sql);
         if ($query) {
             $this->result = $query->fetch_all(MYSQLI_ASSOC);
@@ -113,7 +139,7 @@ class Database
             }
             if ($where != null) {
                 $sql .= " WHERE $where";
-            }          
+            }
             $query = $this->mysqli->query($sql);
             if ($query) {
                 $this->result = $query->fetch_all(MYSQLI_ASSOC);
@@ -205,4 +231,3 @@ class Database
         }
     }
 }
-?>
