@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "98e1d60ade5c8fd3539868ab9b62afaf",
+    "content-hash": "b74d44ff475eac0ae46a438c0829bca8",
     "packages": [
         {
             "name": "shuchkin/simplexlsx",

@@ -8,8 +8,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { //kiểm tra có phương thức pos
     //lấy dữ liệu được truyền qua phương thức post từ frontend
     $data = json_decode(file_get_contents("php://input", true));
 
-    $username = $data->username;
-    $password = $data->password;
+    if(!isset($data->username) && !isset($_POST['username'])){
+        echo json_encode([
+            'code' => 400,
+            'message' => 'Vui lòng cung cấp username!'
+        ]);
+        return;
+    }
+    if(!isset($data->password) && !isset($_POST['password'])){
+        echo json_encode([
+            'code' => 400,
+            'message' => 'Vui lòng cung cấp password!'
+        ]);
+        return;
+    }
+
+    $username = $data?$data->username:$_POST['username'];
+    $password = $data?$data->password:$_POST['password'];
 
     $obj->select('accounts', '*', null, "username='{$username}'", null, null);
     $result = $obj->getResult();

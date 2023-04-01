@@ -9,4 +9,5 @@ Website trắc nghiệm bằng php
     - import câu hỏi từ file excel
 
 - Sử dụng composer để cài đặt package: simplexlsx
+- command: composer require shuchkin/simplexlsx
 - link package: https://github.com/shuchkin/simplexlsx
