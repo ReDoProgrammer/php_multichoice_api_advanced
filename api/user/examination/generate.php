@@ -8,29 +8,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $jwt = new Middleware;
     $user = $jwt->decode($allHeader);
 
-    if ($user) {   
+    if ($user) {
+        try {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $request = isset($data['input']) ? $data['input'] : $_POST['input'];
 
-        $data = json_decode(file_get_contents("php://input", true));
-        if(!isset($data->noq) && !isset($_POST['noq'])){
+            $someArray = json_decode($request, true);
+            $questions = [];
+            foreach ($someArray as $item) {
+                $level = $item['level'];
+                $noq = $item['noq'];
+                $questions =array_merge($questions,json_decode($obj->call_proc("GetQuestions",array($level,$noq))));               
+            }
             echo json_encode([
-                'code' => 400,
-                'message' => 'Vui lòng nhập số lượng câu hỏi (noq)!'
+                'code' => 200,
+                'message' => 'Lấy đề thi thành công!',
+                'questions'=>$questions
             ]);
-            return;
-        }
-        if(!isset($data->level) && !isset($_POST['level'])){
+        } catch (\Throwable $th) {
             echo json_encode([
-                'code' => 400,
-                'message' => 'Vui lòng nhập mức độ khó (level)!'
+                'code' => 500,
+                'message' => `Lỗi tạo đề thi {$th->getMessage()}!`              
             ]);
-            return;
         }
-
-        $noq = $data?$data->noq:$_POST['noq'];//number of question 
-        $level = $data?$data->level:$_POST['level'];// hardness level of questions  
-        $array = array(1,10);
-        $result = $obj->call_proc("GetQuestions",$array);
-        print_r($result);
     }
 } else {
     echo json_encode([
@@ -38,4 +38,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'message' => 'Truy cập bị từ chối!'
     ]);
 }
-?>
