@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 echo json_encode([
                     'code' => 400,
                     'message' => 'Vui lòng nhập tham số đầu vào input!',
-                    'example' => '[{"level"=>1,"noq"=>10},{"level"=>2,"noq"=>5}]'
+                    'example' => '[{"level":1,"noq":10},{"level":2,"noq":5}]'
                 ]);
                 return;
             }
