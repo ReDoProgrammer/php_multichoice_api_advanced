@@ -19,28 +19,19 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Administrator!</h1>
                                     </div>
-                                    <form class="user">
+                                    <div class="user">
                                         <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address...">
+                                            <input type="text" class="form-control form-control-user" id="txtUsername" aria-describedby="emailHelp" placeholder="Enter username...">
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Password">
+                                            <input type="password" class="form-control form-control-user" id="txtPassword" placeholder="Password">
                                         </div>
-                                        <div class="form-group">
-                                            <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
-                                                <label class="custom-control-label" for="customCheck">Remember
-                                                    Me</label>
-                                            </div>
-                                        </div>
-                                        <a href="index.html" class="btn btn-primary btn-user btn-block">
-                                            Login
-                                        </a>
 
-                                    </form>
+                                        <button class="btn btn-primary btn-user btn-block" id="btnSubmitLogin">
+                                            Login
+                                        </button>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -54,7 +45,15 @@
 
     </div>
 
-    
+
 
 </body>
 <?php include_once('./layouts/footer.php') ?>
+
+<script>
+    $('#btnSubmitLogin').click(function(){
+        let username = $('#txtUsername').val();
+        let password = $('#txtPassword').val();
+        console.log({username,password});
+    })
+</script>
